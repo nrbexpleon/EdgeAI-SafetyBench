@@ -1,0 +1,14 @@
+import test from 'node:test';import assert from 'node:assert/strict';import {confusion,classificationMetrics,expectedCalibrationError,percentile,groupMetrics} from '../src/domain/metrics.mjs';import {compareDistributions,evaluateGates} from '../src/domain/bench.mjs';
+const results=[{actual:'a',predicted:'a',confidence:.9,group:'g1'},{actual:'a',predicted:'b',confidence:.6,group:'g1'},{actual:'b',predicted:'b',confidence:.8,group:'g2'},{actual:'b',predicted:'b',confidence:.7,group:'g2'}];
+test('confusion matrix counts outcomes',()=>{const m=confusion(['a','b'],results);assert.equal(m.a.b,1);assert.equal(m.b.b,2)});
+test('classification metrics calculate accuracy',()=>assert.equal(classificationMetrics(['a','b'],results).accuracy,.75));
+test('classification metrics calculate class support',()=>assert.equal(classificationMetrics(['a','b'],results).perClass.a.support,2));
+test('macro F1 is bounded',()=>{const x=classificationMetrics(['a','b'],results).macroF1;assert.ok(x>=0&&x<=1)});
+test('calibration error is bounded',()=>{const x=expectedCalibrationError(results);assert.ok(x>=0&&x<=1)});
+test('percentile selects nearest rank',()=>assert.equal(percentile([1,2,3,4,5],.95),5));
+test('empty percentile is zero',()=>assert.equal(percentile([],.95),0));
+test('group metrics expose accuracy gap',()=>assert.equal(groupMetrics(results).accuracyGap,.5));
+test('stable distributions report stable',()=>assert.equal(compareDistributions({a:.5,b:.5},{a:.5,b:.5}).status,'stable'));
+test('drift distributions report significant',()=>assert.equal(compareDistributions({a:.9,b:.1},{a:.1,b:.9}).status,'significant-drift'));
+test('gate evaluator passes gte',()=>assert.equal(evaluateGates({x:.9},[{id:'x',metric:'x',operator:'gte',threshold:.8}])[0].passed,true));
+test('gate evaluator fails missing metric',()=>assert.equal(evaluateGates({},[{id:'x',metric:'x',operator:'lte',threshold:1}])[0].passed,false));
