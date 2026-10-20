@@ -1,0 +1,15 @@
+node_modules/
+.env
+.env.*
+!.env.example
+coverage/
+artifacts/
+models/
+datasets/
+*.onnx
+*.tflite
+*.engine
+*.pem
+*.key
+*.log
+.DS_Store

@@ -1,0 +1,13 @@
+{
+  "seed":42,
+  "perturbations":[{"name":"sensor-noise","type":"gaussian-noise","sigma":0.01},{"name":"voltage-bias","type":"bias","value":0.02},{"name":"lost-temperature","type":"drop-feature","index":1}],
+  "oodConfidenceThreshold":0.8,
+  "referenceDistribution":{"normal":0.5,"anomaly":0.5},
+  "gates":[
+    {"id":"accuracy","metric":"metrics.accuracy","operator":"gte","threshold":0.8},
+    {"id":"latency","metric":"performance.latencyP95Ms","operator":"lte","threshold":50},
+    {"id":"calibration","metric":"calibration.expectedCalibrationError","operator":"lte","threshold":0.35},
+    {"id":"group-gap","metric":"fairness.accuracyGap","operator":"lte","threshold":0.5},
+    {"id":"ood-confidence","metric":"ood.highConfidenceRate","operator":"lte","threshold":1.0}
+  ]
+}

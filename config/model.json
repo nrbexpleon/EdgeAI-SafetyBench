@@ -1,0 +1,9 @@
+{
+  "manifest": {
+    "id":"battery-anomaly-edge","name":"Battery anomaly classifier","version":"1.0.0","task":"classification","target":"linux-x86_64-reference","precision":"fp32",
+    "features":["cell_delta_v","temperature_c","current_a"],"labels":["normal","anomaly"],"artifactHash":"demo-model-not-production",
+    "dataset":{"name":"synthetic-battery-evaluation","version":"1.0","license":"project fixture"},
+    "intendedUse":"Reference qualification workflow for simulated battery telemetry","limitations":["Synthetic fixture only","Not qualified for vehicle control"]
+  },
+  "model": {"weights":[[-3,-0.03,0],[3,0.03,0]],"bias":[2,-2]}
+}

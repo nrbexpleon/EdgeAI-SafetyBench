@@ -1,0 +1,12 @@
+import test from 'node:test';import assert from 'node:assert/strict';import {validateManifest,hashManifest} from '../src/domain/model-manifest.mjs';import {validateDataset} from '../src/domain/dataset.mjs';
+const manifest={id:'m',name:'M',version:'1',task:'classification',target:'host',precision:'fp32',features:['a','b'],labels:['yes','no']};
+test('valid manifest normalizes defaults',()=>{const m=validateManifest(manifest);assert.equal(m.dataset.name,'unspecified');assert.deepEqual(m.limitations,[])});
+test('manifest hash is deterministic',()=>assert.equal(hashManifest(validateManifest(manifest)),hashManifest(validateManifest(manifest))));
+test('manifest requires fields',()=>assert.throws(()=>validateManifest({...manifest,id:''}),/id required/));
+test('manifest rejects unsupported task',()=>assert.throws(()=>validateManifest({...manifest,task:'detection'}),/classification/));
+test('manifest rejects precision',()=>assert.throws(()=>validateManifest({...manifest,precision:'binary'}),/precision/));
+test('manifest rejects duplicate labels',()=>assert.throws(()=>validateManifest({...manifest,labels:['x','x']}),/unique/));
+test('dataset validates samples',()=>{const m=validateManifest(manifest);const d=validateDataset({samples:[{id:'1',features:[1,2],label:'yes'}]},m);assert.equal(d.samples[0].group,'default')});
+test('dataset rejects unknown label',()=>assert.throws(()=>validateDataset({samples:[{features:[1,2],label:'maybe'}]},validateManifest(manifest)),/unknown label/));
+test('dataset rejects feature shape',()=>assert.throws(()=>validateDataset({samples:[{features:[1],label:'yes'}]},validateManifest(manifest)),/features/));
+test('dataset rejects duplicate ids',()=>assert.throws(()=>validateDataset({samples:[{id:'x',features:[1,2],label:'yes'},{id:'x',features:[1,2],label:'no'}]},validateManifest(manifest)),/duplicate/));

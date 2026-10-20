@@ -1,0 +1,8 @@
+{
+  "name":"synthetic-battery-evaluation","version":"1.0",
+  "samples":[
+    {"id":"n1","features":[0.01,25,5],"label":"normal","group":"ambient"},{"id":"n2","features":[0.02,32,10],"label":"normal","group":"ambient"},{"id":"n3","features":[0.03,38,25],"label":"normal","group":"warm"},{"id":"n4","features":[0.01,45,30],"label":"normal","group":"warm"},
+    {"id":"a1","features":[0.45,75,80],"label":"anomaly","group":"hot"},{"id":"a2","features":[0.60,85,100],"label":"anomaly","group":"hot"},{"id":"a3","features":[0.35,68,60],"label":"anomaly","group":"warm"},{"id":"a4","features":[0.50,80,90],"label":"anomaly","group":"hot"},
+    {"id":"o1","features":[1.5,160,500],"label":"anomaly","group":"ood","ood":true}
+  ]
+}
